@@ -1,0 +1,77 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+    }
+}
+plugins {
+    id 'eclipse'
+    id 'maven-publish'
+    id 'io.izzel.taboolib' version '1.42'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.10'
+    id 'java'
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+
+minecraft {
+    mappings channel: 'official', version: '1.16.5'
+}
+
+taboolib {
+    description {
+        it.prefix("prjectname")
+    }
+    install("common")
+    install("common-5")
+    install("platform-bukkit")
+    classifier = null
+    version = "6.0.9-46"
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.aliyun.com/repository/public/'}
+    maven { url 'https://repo.mc9y.com/snapshots'}
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
+    implementation 'com.google.code.gson:gson:2.9.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    compileOnly("ink.ptms:nms-all:1.0.0")
+    compileOnly("ink.ptms.core:v11900:11900-minimize:mapped")
+    compileOnly("ink.ptms.core:v11900:11900-minimize:universal")
+    compileOnly(fileTree("libs"))
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+configure(JavaPluginConvention) {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+artifacts {
+    repositories {
+        maven {
+            url = uri("https://repo.tabooproject.org/repository/releases")
+            credentials {
+                username = project.findProperty("taboolibUsername").toString()
+                password = project.findProperty("taboolibPassword").toString()
+            }
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
